@@ -1,33 +1,18 @@
-pipeline {
-    agent any
-
-    tools {
-        maven 'Maven'   // Make sure 'Maven' is configured in Jenkins Global Tools
-        jdk 'JDK17'     // Use JDK17 or whatever you configured
+node {
+    stage('Checkout') {
+        echo 'Checking out source code...'
+        checkout scm
     }
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building the Spring PetClinic application...'
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'mvn test'
-            }
-        }
+    stage('Build') {
+        echo 'Building the Spring PetClinic project...'
+        bat 'mvn clean package -DskipTests'
     }
 
-    post {
-        success {
-            echo '✅ Build and Test stages completed successfully!'
-        }
-        failure {
-            echo '❌ Build failed! Please check errors in Console Output.'
-        }
+    stage('Test') {
+        echo 'Running tests...'
+        bat 'mvn test'
     }
+
+    echo '✅ Scripted pipeline completed successfully!'
 }
